@@ -21,7 +21,7 @@ if ( ! isset($_GET['auto_id']) ) {
 }
 
 $stmt = $pdo->prepare("SELECT make, auto_id FROM autos where auto_id = :xyz");
-$stmt->execute(array(":xyz" => $_GET['auto_id']));
+$stmt->execute(array(":xyz" => $_GET['profile_id']));
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 if ( $row === false ) {
     $_SESSION['error'] = 'Bad value for auto_id';
@@ -32,8 +32,8 @@ if ( $row === false ) {
 ?>
 <p>Confirm: Deleting <?= htmlentities($row['make']) ?></p>
 
-<form method="post">
-<input type="hidden" name="auto_id" value="<?= $row['auto_id'] ?>">
-<input type="submit" value="Delete" name="delete">
-<a href="index.php">Cancel</a>
-</form>
+    <form method="post">
+    <input type="hidden" name="auto_id" value="<?= $row['auto_id'] ?>">
+<   input type="submit" value="Delete" name="delete">
+    <a href="index.php">Cancel</a>
+<   /form>

@@ -1,8 +1,14 @@
 <?php
     require_once "pdo.php";
     session_start(); 
-    if ( ! isset($_SESSION['name']) ) {
-        die('ACCESS DENIED');
+
+    if ( !isset($_SESSION['name']) ) {
+        die('Not logged in');
+    }
+    if(!isset($_GET['profile_id'])){
+        $_SESSION['error'] = 'Missing profile_id'; 
+        header('Location: index.php'); 
+        return; 
     }
     if ( isset($_POST['cancel']) ) {
         header('Location: index.php');
@@ -35,6 +41,14 @@
         header('Location: index.php');
         return;  
     }
+    $stmt = $pdo->prepare("SELECT * FROM profile WHERE profile_id = :pf_id");
+    $stmt->execute(array(":pf_id" => $_GET['profile_id']));
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ( $row === false) {
+        $_SESSION['error'] = 'Could not load profile';
+        header( 'Location: index.php' ) ;
+        return;
+    }
 ?>
 <!DOCTYPE html>
 <html>
@@ -62,14 +76,6 @@
     if(isset($_SESSION['error'])){
         echo('<p style="color: red;">'.$_SESSION['error']."</p>\n");
         unset($_SESSION['error']);
-    }
-    $stmt = $pdo->prepare("SELECT * FROM profile WHERE profile_id = :pf_id");
-    $stmt->execute(array(":pf_id" => $_GET['profile_id']));
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ( $row === false) {
-        $_SESSION['error'] = 'Could not load profile';
-        header( 'Location: index.php' ) ;
-        return;
     }
 ?>
 <form method="post">
